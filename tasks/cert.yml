@@ -1,0 +1,22 @@
+---
+- name: Create SSL directory
+  file:
+    path: /etc/nginx/ssl
+    state: directory
+    mode: '0755'
+
+- name: Generate private key
+  command: openssl genpkey -algorithm RSA -out /etc/nginx/ssl/{{ ssl_certificate_key }} -pkeyopt rsa_keygen_bits:2048
+  args:
+    creates: /etc/nginx/ssl/{{ ssl_certificate_key }}
+
+- name: Generate CSR (Certificate Signing Request)
+  command: openssl req -new -key /etc/nginx/ssl/{{ ssl_certificate_key }} -out /etc/nginx/ssl/{{ ssl_csr }} -subj "/C=RU/ST=Moscow/L=Moscow/O=MyOrg/OU=IT/CN={{ jenkins_domain }}"
+  args:
+    creates: /etc/nginx/ssl/{{ ssl_csr }}
+
+- name: Generate self-signed certificate
+  command: openssl x509 -req -days 365 -in /etc/nginx/ssl/{{ ssl_csr }} -signkey /etc/nginx/ssl/{{ ssl_certificate_key }} -out /etc/nginx/ssl/{{ ssl_certificate }}
+  args:
+    creates: /etc/nginx/ssl/{{ ssl_certificate }}
+

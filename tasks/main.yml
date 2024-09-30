@@ -1,0 +1,50 @@
+---
+# tasks file for ansible-role-jenkins
+
+- name: Install dependencies
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openjdk-11-jdk
+    - gnupg
+    - nginx
+    - openssl
+
+# Вызов отдельной задачи для генерации сертификатов
+- include_tasks: cert.yml
+  tags: cert-create
+
+# Если сертификаты не генерируются, загружаем их из Vault
+- name: Load SSL certificates from Vault
+  set_fact:
+    ssl_certificate: "{{ vault_ssl_certificate }}"
+    ssl_certificate_key: "{{ vault_ssl_certificate_key }}"
+  when: "'cert-create' not in ansible_run_tags"
+
+- name: Copy SSL certificates to nginx
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/nginx/ssl/"
+    mode: '0644'
+  with_items:
+    - "{{ ssl_certificate }}"
+    - "{{ ssl_certificate_key }}"
+
+- name: Configure Nginx for Jenkins SSL
+  template:
+    src: jenkins_nginx.conf.j2
+    dest: /etc/nginx/sites-available/jenkins
+  notify: restart nginx
+
+- name: Enable Nginx Jenkins site
+  file:
+    src: /etc/nginx/sites-available/jenkins
+    dest: /etc/nginx/sites-enabled/jenkins
+    state: link
+
+- name: Install Jenkins plugins
+  jenkins_plugin:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ jenkins_plugins }}"

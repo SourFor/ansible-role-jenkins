@@ -1,0 +1,21 @@
+---
+# defaults file for ansible-role-jenkins
+jenkins_domain: jenkins.example.com
+ssl_certificate: jenkins.crt
+ssl_certificate_key: jenkins.key
+ssl_csr: jenkins.csr
+vault_ssl_certificate: "{{ vault_ssl_path }}/jenkins.crt"
+vault_ssl_certificate_key: "{{ vault_ssl_path }}/jenkins.key"
+jenkins_plugins:
+  - git
+  - workflow-aggregator
+  - blueocean
+
+vault_ssl_certificate: |
+  -----BEGIN CERTIFICATE-----
+  ...
+  -----END CERTIFICATE-----
+vault_ssl_certificate_key: |
+  -----BEGIN PRIVATE KEY-----
+  ...
+  -----END PRIVATE KEY-----
