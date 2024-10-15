@@ -1,0 +1,40 @@
+import jenkins.model.*
+import hudson.security.*
+
+// Настройки пользователя
+def adminUsername = "admin"  // Имя пользователя, которого нужно создать или обновить
+def adminPassword = "{{ jenkins_admin_pass }}"  // Новый пароль для пользователя
+
+def instance = Jenkins.getInstance()
+def hudsonRealm = instance.getSecurityRealm()
+
+// Если система безопасности не настроена, создаем новую
+if (!(hudsonRealm instanceof HudsonPrivateSecurityRealm)) {
+    hudsonRealm = new HudsonPrivateSecurityRealm(false)
+    instance.setSecurityRealm(hudsonRealm)
+    instance.save()
+}
+
+// Получаем список пользователей
+def existingUser = hudsonRealm.getAllUsers().find { it.id == adminUsername }
+
+if (existingUser) {
+    // Если пользователь существует, меняем ему пароль
+    def user = hudson.model.User.get(adminUsername)
+    def password = hudson.security.HudsonPrivateSecurityRealm.Details.fromPlainPassword(adminPassword)
+    user.addProperty(password)
+    println("Пароль для пользователя '${adminUsername}' был успешно изменен.")
+} else {
+    // Если пользователь не существует, создаем его
+    hudsonRealm.createAccount(adminUsername, adminPassword)
+    println("Пользователь '${adminUsername}' был успешно создан.")
+}
+
+// Устанавливаем стратегию авторизации для управления доступом
+def strategy = new FullControlOnceLoggedInAuthorizationStrategy()
+strategy.setAllowAnonymousRead(false)  // Закрываем доступ для анонимных пользователей
+instance.setAuthorizationStrategy(strategy)
+
+// Сохраняем изменения
+instance.save()
+println("Конфигурация безопасности Jenkins обновлена.")

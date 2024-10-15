@@ -1,35 +1,98 @@
 ---
 # tasks file for ansible-role-jenkins
 
-- name: Install dependencies
-  apt:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - openjdk-11-jdk
-    - gnupg
-    - nginx
-    - openssl
+
+- block:
+
+  - name: Install dependencies
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - openjdk-17-jdk
+      - gnupg
+      - nginx
+      - openssl
+
+  # Добавляем репозиторий Jenkins
+  - name: Add Jenkins GPG key
+    apt_key:
+      url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+      state: present
+
+  - name: Add Jenkins repository
+    apt_repository:
+      repo: 'deb http://pkg.jenkins.io/debian-stable binary/'
+      state: present
+
+  - name: Update APT cache
+    apt:
+      update_cache: yes
+
+  - name: Install Jenkins
+    apt:
+      name: jenkins
+      state: present
+
+  - name: create dir /etc/jenkins
+    ansible.builtin.file:
+      path: /etc/jenkins
+      owner: jenkins
+      group: jenkins
+      state: directory
+      mode: '0600'
+
+  - name: create dir /etc/jenkins
+    ansible.builtin.file:
+      path: /var/lib/jenkins/init.groovy.d
+      owner: jenkins
+      group: jenkins
+      state: directory
+      mode: '0755'
+
+  - name: Create basic authorisation for Jenkins
+    template:
+      src: basic-security.groovy.j2
+      dest: /var/lib/jenkins/init.groovy.d/basic-security.groovy
+      owner: jenkins
+      group: jenkins
+      mode: '0640'
+    no_log: true
+    notify: 
+      - restart jenkins
+
+  - name: Configure jenkins systemd service
+    template:
+      src: jenkins.service.j2
+      dest: "/usr/lib/systemd/system/jenkins.service"
+    notify:
+      - reload systemd 
+      - restart jenkins
+
+  tags:
+    - install
+    - never
+
+- name: Ensure Jenkins is started and enabled
+  ansible.builtin.service:
+    name: jenkins
+    state: restarted
+    enabled: yes
 
 # Вызов отдельной задачи для генерации сертификатов
 - include_tasks: cert.yml
-  tags: cert-create
+  tags: 
+    - cert-create
+    - never
 
 # Если сертификаты не генерируются, загружаем их из Vault
 - name: Load SSL certificates from Vault
   set_fact:
     ssl_certificate: "{{ vault_ssl_certificate }}"
     ssl_certificate_key: "{{ vault_ssl_certificate_key }}"
-  when: "'cert-create' not in ansible_run_tags"
-
-- name: Copy SSL certificates to nginx
-  copy:
-    src: "{{ item }}"
-    dest: "/etc/nginx/ssl/"
-    mode: '0644'
-  with_items:
-    - "{{ ssl_certificate }}"
-    - "{{ ssl_certificate_key }}"
+  tags:
+    - cert-vault
+    - never
 
 - name: Configure Nginx for Jenkins SSL
   template:
@@ -43,8 +106,32 @@
     dest: /etc/nginx/sites-enabled/jenkins
     state: link
 
-- name: Install Jenkins plugins
-  jenkins_plugin:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ jenkins_plugins }}"
+# Ожидание, пока Jenkins будет готов для разблокировки
+- name: Wait for Jenkins to be ready
+  uri:
+    url: http://localhost:8080/jenkins
+    status_code: [200, 403, 401, 301]
+    return_content: yes
+  register: jenkins_status
+  retries: 10
+  delay: 15
+  until: jenkins_status.status in [200, 403, 401, 301]
+
+# - name: Install Jenkins plugins
+#   jenkins_plugin:
+#     url: "https://{{ jenkins_domain }}"
+#     url_username: admin
+#     url_password: "{{ jenkins_admin_pass }}"
+#     name: "{{ item }}"
+#     state: present
+#   with_items: "{{ jenkins_plugins }}"
+#   tags:
+#     - modules
+#     - never
+
+
+# Install modules
+- include_tasks: modules.yml
+  tags: 
+    - modules
+    - never

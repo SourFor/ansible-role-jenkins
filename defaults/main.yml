@@ -1,21 +1,249 @@
 ---
 # defaults file for ansible-role-jenkins
 jenkins_domain: jenkins.example.com
+jenkins_admin_pass: "6fb362466213479c892db59f9f25eee4"
+ssl_dir_path: "/etc/nginx/ssl"
 ssl_certificate: jenkins.crt
 ssl_certificate_key: jenkins.key
 ssl_csr: jenkins.csr
-vault_ssl_certificate: "{{ vault_ssl_path }}/jenkins.crt"
-vault_ssl_certificate_key: "{{ vault_ssl_path }}/jenkins.key"
+ssl_certificate_path: "{{ ssl_dir_path }}/{{ ssl_certificate }}"
+ssl_certificate_key_path: "{{ ssl_dir_path }}/{{ ssl_certificate_key }}"
+ssl_csr_path: "{{ ssl_dir_path }}/{{ ssl_csr }}"
 jenkins_plugins:
-  - git
-  - workflow-aggregator
-  - blueocean
+  ant: 
+    version: 511.v0a_a_1a_334f41b_
+  antisamy-markup-formatter: 
+    version: 162.v0e6ec0fcfcf6
+  apache-httpcomponents-client-4-api: 
+    version: 4.5.14-208.v438351942757
+  asm-api: 
+    version: 9.7-33.v4d23ef79fcc8
+  authentication-tokens: 
+    version: 1.119.v50285141b_7e1
+  blueocean-bitbucket-pipeline: 
+    version: 1.27.16
+  blueocean-commons: 
+    version: 1.27.16
+  blueocean-config: 
+    version: 1.27.16
+  blueocean-core-js: 
+    version: 1.27.16
+  blueocean-dashboard: 
+    version: 1.27.16
+  blueocean-display-url: 
+    version: 2.4.3
+  blueocean-events: 
+    version: 1.27.16
+  blueocean-git-pipeline: 
+    version: 1.27.16
+  blueocean-github-pipeline: 
+    version: 1.27.16
+  blueocean-i18n: 
+    version: 1.27.16
+  blueocean-jwt: 
+    version: 1.27.16
+  blueocean-personalization: 
+    version: 1.27.16
+  blueocean-pipeline-api-impl: 
+    version: 1.27.16
+  blueocean-pipeline-editor: 
+    version: 1.27.16
+  blueocean-pipeline-scm-api: 
+    version: 1.27.16
+  blueocean-rest-impl: 
+    version: 1.27.16
+  blueocean-rest: 
+    version: 1.27.16
+  blueocean-web: 
+    version: 1.27.16
+  blueocean: 
+    version: 1.27.16
+  bootstrap5-api: 
+    version: 5.3.3-1
+  bouncycastle-api: 
+    version: 2.30.1.78.1-248.ve27176eb_46cb_
+  branch-api: 
+    version: 2.1178.v969d9eb_c728e
+  build-timeout: 
+    version: 1.33
+  caffeine-api: 
+    version: 3.1.8-133.v17b_1ff2e0599
+  checks-api: 
+    version: 2.2.1
+  cloudbees-bitbucket-branch-source: 
+    version: 888.v8e6d479a_1730
+  cloudbees-folder: 
+    version: 6.955.v81e2a_35c08d3
+  commons-lang3-api: 
+    version: 3.17.0-84.vb_b_938040b_078
+  commons-text-api: 
+    version: 1.12.0-129.v99a_50df237f7
+  credentials-binding: 
+    version: 681.vf91669a_32e45
+  credentials: 
+    version: 1378.v81ef4269d764
+  dark-theme: 
+    version: 479.v661b_1b_911c01
+  display-url-api: 
+    version: 2.204.vf6fddd8a_8b_e9
+  durable-task: 
+    version: 577.v2a_8a_4b_7c0247
+  echarts-api: 
+    version: 5.5.1-1
+  eddsa-api: 
+    version: 0.3.0-4.v84c6f0f4969e
+  email-ext: 
+    version: 1844.v3ea_a_b_842374a_
+  favorite: 
+    version: 2.221.v19ca_666b_62f5
+  font-awesome-api: 
+    version: 6.6.0-2
+  git-client: 
+    version: 5.0.0
+  git: 
+    version: 5.5.1
+  github-api: 
+    version: 1.321-468.v6a_9f5f2d5a_7e
+  github-branch-source: 
+    version: 1797.v86fdb_4d57d43
+  github: 
+    version: 1.40.0
+  gradle: 
+    version: 2.13
+  gson-api: 
+    version: 2.11.0-41.v019fcf6125dc
+  handy-uri-templates-2-api: 
+    version: 2.1.8-30.v7e777411b_148
+  htmlpublisher: 
+    version: 1.36
+  instance-identity: 
+    version: 201.vd2a_b_5a_468a_a_6
+  ionicons-api: 
+    version: 74.v93d5eb_813d5f
+  jackson2-api: 
+    version: 2.17.0-379.v02de8ec9f64c
+  jakarta-activation-api: 
+    version: 2.1.3-1
+  jakarta-mail-api: 
+    version: 2.1.3-1
+  javax-activation-api: 
+    version: 1.2.0-7
+  jaxb: 
+    version: 2.3.9-1
+  jenkins-design-language: 
+    version: 1.27.16
+  jjwt-api: 
+    version: 0.11.5-112.ve82dfb_224b_a_d
+  joda-time-api: 
+    version: 2.13.0-85.vb_64d1c2921f1
+  jquery3-api: 
+    version: 3.7.1-2
+  json-api: 
+    version: 20240303-41.v94e11e6de726
+  json-path-api: 
+    version: 2.9.0-58.v62e3e85b_a_655
+  junit: 
+    version: 1302.va_b_878c32eb_b_5
+  ldap: 
+    version: 725.v3cb_b_711b_1a_ef
+  mailer: 
+    version: 488.v0c9639c1a_eb_3
+  matrix-auth: 
+    version: 3.2.2
+  matrix-project: 
+    version: 832.va_66e270d2946
+  metrics: 
+    version: 4.2.21-451.vd51df8df52ec
+  mina-sshd-api-common: 
+    version: 2.13.2-125.v200281b_61d59
+  mina-sshd-api-core: 
+    version: 2.13.2-125.v200281b_61d59
+  okhttp-api: 
+    version: 4.11.0-172.vda_da_1feeb_c6e
+  pam-auth: 
+    version: 1.11
+  pipeline-build-step: 
+    version: 540.vb_e8849e1a_b_d8
+  pipeline-github-lib: 
+    version: 61.v629f2cc41d83
+  pipeline-graph-analysis: 
+    version: 216.vfd8b_ece330ca_
+  pipeline-graph-view: 
+    version: 340.v28cecee8b_25f
+  pipeline-groovy-lib: 
+    version: 730.ve57b_34648c63
+  pipeline-input-step: 
+    version: 495.ve9c153f6067b_
+  pipeline-milestone-step: 
+    version: 119.vdfdc43fc3b_9a_
+  pipeline-model-api: 
+    version: 2.2214.vb_b_34b_2ea_9b_83
+  pipeline-model-definition: 
+    version: 2.2214.vb_b_34b_2ea_9b_83
+  pipeline-model-extensions: 
+    version: 2.2214.vb_b_34b_2ea_9b_83
+  pipeline-stage-step: 
+    version: 312.v8cd10304c27a_
+  pipeline-stage-tags-metadata: 
+    version: 2.2214.vb_b_34b_2ea_9b_83
+  plain-credentials: 
+    version: 183.va_de8f1dd5a_2b_
+  plugin-util-api: 
+    version: 5.1.0
+  pubsub-light: 
+    version: 1.18
+  resource-disposer: 
+    version: 0.24
+  scm-api: 
+    version: 696.v778d637b_a_762
+  script-security: 
+    version: 1362.v67dc1f0e1b_b_3
+  snakeyaml-api: 
+    version: 2.3-123.v13484c65210a_
+  sse-gateway: 
+    version: 1.27
+  ssh-credentials: 
+    version: 343.v884f71d78167
+  ssh-slaves: 
+    version: 2.973.v0fa_8c0dea_f9f
+  structs: 
+    version: 338.v848422169819
+  theme-manager: 
+    version: 262.vc57ee4a_eda_5d
+  timestamper: 
+    version: 1.27
+  token-macro: 
+    version: 400.v35420b_922dcb_
+  trilead-api: 
+    version: 2.147.vb_73cc728a_32e
+  variant: 
+    version: 60.v7290fc0eb_b_cd
+  workflow-aggregator: 
+    version: 600.vb_57cdd26fdd7
+  workflow-api: 
+    version: 1336.vee415d95c521
+  workflow-basic-steps: 
+    version: 1058.vcb_fc1e3a_21a_9
+  workflow-cps: 
+    version: 3969.vdc9d3a_efcc6a_
+  workflow-durable-task-step: 
+    version: 1371.vb_7cec8f3b_95e
+  workflow-job: 
+    version: 1436.vfa_244484591f
+  workflow-multibranch: 
+    version: 795.ve0cb_1f45ca_9a_
+  workflow-scm-step: 
+    version: 427.v4ca_6512e7df1
+  workflow-step-api: 
+    version: 678.v3ee58b_469476
+  workflow-support: 
+    version: 926.v9f4f9b_b_98c19
+  ws-cleanup: 
+    version: 0.46
 
 vault_ssl_certificate: |
   -----BEGIN CERTIFICATE-----
-  ...
   -----END CERTIFICATE-----
 vault_ssl_certificate_key: |
   -----BEGIN PRIVATE KEY-----
-  ...
   -----END PRIVATE KEY-----
