@@ -133,7 +133,7 @@
 
   - name: check Jenkins availability via Nginx
     uri:
-      url: https://{{ jenkins_domain }}/jenkins
+      url: "https://{{ jenkins_domain }}/jenkins"
       status_code: [200, 403, 401, 301]
       return_content: yes
     register: jenkins_status
