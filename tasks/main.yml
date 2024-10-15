@@ -10,9 +10,6 @@
       state: present
     with_items:
       - openjdk-17-jdk
-      - gnupg
-      - nginx
-      - openssl
 
   # Добавляем репозиторий Jenkins
   - name: Add Jenkins GPG key
@@ -90,6 +87,18 @@
       dest: /etc/nginx/sites-available/jenkins
     notify: restart nginx
 
+  # Вызов отдельной задачи для генерации сертификатов
+  - include_tasks: cert-create.yml
+    tags: 
+      - cert-create
+      - never
+
+  # Если сертификаты не генерируются, загружаем их из Vault
+  - include_tasks: cert-vault.yml
+    tags:
+      - cert-vault
+      - never
+
   - name: Enable Nginx Jenkins site
     file:
       src: /etc/nginx/sites-available/jenkins
@@ -103,18 +112,6 @@
 
   tags:
     - nginx
-    - never
-
-# Вызов отдельной задачи для генерации сертификатов
-- include_tasks: cert-creaate.yml
-  tags: 
-    - cert-create
-    - never
-
-# Если сертификаты не генерируются, загружаем их из Vault
-- include_tasks: cert-vault.yml
-  tags:
-    - cert-vault
     - never
 
 - block:
