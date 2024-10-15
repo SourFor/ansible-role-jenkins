@@ -1,7 +1,7 @@
 ---
 # defaults file for ansible-role-jenkins
 jenkins_domain: jenkins.example.com
-jenkins_admin_pass: "6fb362466213479c892db59f9f25eee4"
+jenkins_admin_pass: "6fb362466213479c892db59f9f25eee4" # save it in the vault file
 ssl_dir_path: "/etc/nginx/ssl"
 ssl_certificate: jenkins.crt
 ssl_certificate_key: jenkins.key
@@ -9,6 +9,61 @@ ssl_csr: jenkins.csr
 ssl_certificate_path: "{{ ssl_dir_path }}/{{ ssl_certificate }}"
 ssl_certificate_key_path: "{{ ssl_dir_path }}/{{ ssl_certificate_key }}"
 ssl_csr_path: "{{ ssl_dir_path }}/{{ ssl_csr }}"
+rsa_keygen_bits: 2048
+ssl_certificate_info: "/C=RU/ST=Moscow/L=Moscow/O=MyOrg/OU=IT/CN={{ jenkins_domain }}"
+ssl_certificate_days: 365
+
+vault_ssl_certificate: | # save it in the vault file
+  -----BEGIN CERTIFICATE-----
+  MIIDQTCCAikCFGhmaVLY1/PqarV5ktNebugHKS11MA0GCSqGSIb3DQEBCwUAMF0x
+  CzAJBgNVBAYTAlJVMQ8wDQYDVQQIDAZNb3Njb3cxDzANBgNVBAcMBk1vc2NvdzEO
+  MAwGA1UECgwFTXlPcmcxCzAJBgNVBAsMAklUMQ8wDQYDVQQDDAZmYWxjb24wHhcN
+  MjQxMDAyMDgxMTQ3WhcNMjUxMDAyMDgxMTQ3WjBdMQswCQYDVQQGEwJSVTEPMA0G
+  A1UECAwGTW9zY293MQ8wDQYDVQQHDAZNb3Njb3cxDjAMBgNVBAoMBU15T3JnMQsw
+  CQYDVQQLDAJJVDEPMA0GA1UEAwwGZmFsY29uMIIBIjANBgkqhkiG9w0BAQEFAAOC
+  AQ8AMIIBCgKCAQEAxTvX6vhDtlL/6kz9/V+ZuDpk9Kw0wKZ2ODiKmZDqYySunJev
+  UXwDOsB4EZx8+QSPK3O0CJMWqrIRgQDyfLuoP20Jhr6Q79/uaBIeq6WXUZgZnMW3
+  P0FozMfWPfAoanc/09igPz5lfz+QeTdx1Q3Jdh3WXBpD1xqz50lqyVPEn9AHHh09
+  +UvZzR4aHRAFGEvXWrL/hO9Sie99EgKx5mgaUZXI35uFnMa94mb1UNyWCf1Mv9c4
+  tWCWsCNmkiuFBOPzQsXN5bXX7UQL28mDDRN9Ao9/xfeGe/jThti01XybMg5H357K
+  MoIrk977ixK5I4Ko0kP0JOmZyZ9Uooe2dfexYwIDAQABMA0GCSqGSIb3DQEBCwUA
+  A4IBAQCKpdKiVCViQ8kWiYSGxtZL0CaXCSf+yLm6nx9T3xTCriQzi8PYmlthPybu
+  ilWLw8AdCNwF5MH8rp5DEAfZrWQTR6NOrReVCMP4LbRUaz7qvVvTggaGkLWnNOLd
+  m750XgK5bedcW7hFbz7W6whB4MtX7y+QwAEFr9UVJPLln+fL72XPbbZ9+EPy+Awj
+  Y4T+QyOgI+2y9QFuc0cnnQA+XT3jfUJ+xyJl4T3PM0PF7MQiOpRc2D7TL3I3o2Xw
+  8hklRTF9aipowiZad0fyX/O7VuHC8WEJoAUODwN4p6ZciCzq6UbHWkpIU7YJA21f
+  hu0LkDSGFJHF8YEwkP9g9Dif1MfX
+  -----END CERTIFICATE-----
+vault_ssl_certificate_key: | # save it in the vault file
+  -----BEGIN PRIVATE KEY-----
+  MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDFO9fq+EO2Uv/q
+  TP39X5m4OmT0rDTApnY4OIqZkOpjJK6cl69RfAM6wHgRnHz5BI8rc7QIkxaqshGB
+  APJ8u6g/bQmGvpDv3+5oEh6rpZdRmBmcxbc/QWjMx9Y98Chqdz/T2KA/PmV/P5B5
+  N3HVDcl2HdZcGkPXGrPnSWrJU8Sf0AceHT35S9nNHhodEAUYS9dasv+E71KJ730S
+  ArHmaBpRlcjfm4Wcxr3iZvVQ3JYJ/Uy/1zi1YJawI2aSK4UE4/NCxc3ltdftRAvb
+  yYMNE30Cj3/F94Z7+NOG2LTVfJsyDkffnsoygiuT3vuLErkjgqjSQ/Qk6ZnJn1Si
+  h7Z197FjAgMBAAECggEAO1ugxj70Re1hxpZoRDZe0XKFips+/xG5936Qu9nAqJjU
+  Eh2WbkwHvslI+WfitqDYI6gdMQ1vX2za1ru9vqtNXdVHbi1w+jgnDFwTre3WhgBk
+  COn6FcfuLd8gi6B40V3VMED8LTxumGa9aLW2hPuyu2EMb8iZzSVkqkFOqYuT29Jc
+  NBQNIcZf3TrLdm6SLzQmqOpzVtfVhL6IpdpzhZDYHXxry2vYQO2o3tJQ0nB36Z7Q
+  SwxpWpYjSo3xMBYMP3y3Ur+3Wn5n2qRVoPCF3NH6v8zaMLCYupeG5afDNVt3dWaG
+  uKVzFog2rdUPyOHFW3NimpynwypsPolLT8t/j8XNRQKBgQD46LTHmIEs9RdO72qb
+  N/pyJ8wvt4sbbCCuz28+tXKlhGj+n4fNX1q9Vjrcx16MYsSfmveZa+rZSDvEThIM
+  UUG8F90RlAaCVLc7FCVWQmWit1yQt/gAw7PA2Jbo+9MU8eY8jLods+6P+2Cx6/N4
+  GiVHKymkhq+XJUZ7nZATlIXpFwKBgQDK2kUE8k+El9+jgPKgc4NwdtCqXaSJZgmp
+  kZL1V6VRn3X9jbfeT8NRRFXKWiO6ithsA9aTqfSniHRITHSH6cPPCl6A1OJbx60L
+  5cwM5ZMWlGHZHm7QzAPEXesvrhgtMaOdCQZpK5oCqjGzbJlQ66h+Ji5dqgXDQ48S
+  QfDS66eRlQKBgQDcs4nICONQ96jJJuSB6Oq6WatlC/vePsvj9K4RDlYviO6IBvAl
+  G82bYGAk7upY1CK/2mp8sQG106Sa9RZvsYT1wLsWIQh8e51UVxKcH5d65da/wz+1
+  fdFexy1YPCH3yl15htZoC+kV5bDhUfO5pIU1S4JLDdmXzUdnyFe95M2v1QKBgC3a
+  VMufcjYIlnbBCRcXxVhAoz4/WJfuRrTbwRpQK4BdyS/9PtizsvTFu5a39WePRwhz
+  fad3PWQ5Rf+puJWYU7iTIXWBqYERi54q3Yr0weDSvaN0a5wq4Zcbm7P1aGWe2NsA
+  VUCkqHV9vypNnAJcooORYd2uNwtCVC7OVP94YTJZAoGAWn7xqLyfB15BsQZ4CUfo
+  swouseCMpYTTZZY/XJ2O3Q+JClRviYZJzn925sWIgRmvh504DmGEHYs7DNIXsEEA
+  ltCCRQEQ4+Uj8UntMxTiXK7Z4oFLjKSmJjrYbpaJMf1RkZbakaUnMzVB5PF720SL
+  nxrHQPxyRyoHDdprB+WFJ+w=
+  -----END PRIVATE KEY-----
+
 jenkins_plugins:
   ant: 
     version: 511.v0a_a_1a_334f41b_
@@ -240,10 +295,3 @@ jenkins_plugins:
     version: 926.v9f4f9b_b_98c19
   ws-cleanup: 
     version: 0.46
-
-vault_ssl_certificate: |
-  -----BEGIN CERTIFICATE-----
-  -----END CERTIFICATE-----
-vault_ssl_certificate_key: |
-  -----BEGIN PRIVATE KEY-----
-  -----END PRIVATE KEY-----

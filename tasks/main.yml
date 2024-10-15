@@ -80,33 +80,44 @@
     enabled: yes
 
 # Вызов отдельной задачи для генерации сертификатов
-- include_tasks: cert.yml
+- include_tasks: cert-creaate.yml
   tags: 
     - cert-create
     - never
 
 # Если сертификаты не генерируются, загружаем их из Vault
-- name: Load SSL certificates from Vault
-  set_fact:
-    ssl_certificate: "{{ vault_ssl_certificate }}"
-    ssl_certificate_key: "{{ vault_ssl_certificate_key }}"
+- include_tasks: cert-vault.yml
   tags:
     - cert-vault
     - never
 
-- name: Configure Nginx for Jenkins SSL
-  template:
-    src: jenkins_nginx.conf.j2
-    dest: /etc/nginx/sites-available/jenkins
-  notify: restart nginx
+- block: Nginx
+  - name: Configure Nginx for Jenkins SSL
+    template:
+      src: jenkins_nginx.conf.j2
+      dest: /etc/nginx/sites-available/jenkins
+    notify: restart nginx
 
-- name: Enable Nginx Jenkins site
-  file:
-    src: /etc/nginx/sites-available/jenkins
-    dest: /etc/nginx/sites-enabled/jenkins
-    state: link
+  - name: Enable Nginx Jenkins site
+    file:
+      src: /etc/nginx/sites-available/jenkins
+      dest: /etc/nginx/sites-enabled/jenkins
+      state: link
 
-# Ожидание, пока Jenkins будет готов для разблокировки
+  - name: check Jenkins availability via Nginx
+    uri:
+      url: https://{{ jenkins_domain }}/jenkins
+      status_code: [200, 403, 401, 301]
+      return_content: yes
+    register: jenkins_status
+    retries: 10
+    delay: 15
+    until: jenkins_status.status in [200, 403, 401, 301]
+
+  tags:
+    - nginx
+    - never
+
 - name: Wait for Jenkins to be ready
   uri:
     url: http://localhost:8080/jenkins
@@ -116,19 +127,19 @@
   retries: 10
   delay: 15
   until: jenkins_status.status in [200, 403, 401, 301]
+  tags:
+    - always
 
-# - name: Install Jenkins plugins
-#   jenkins_plugin:
-#     url: "https://{{ jenkins_domain }}"
-#     url_username: admin
-#     url_password: "{{ jenkins_admin_pass }}"
-#     name: "{{ item }}"
-#     state: present
-#   with_items: "{{ jenkins_plugins }}"
-#   tags:
-#     - modules
-#     - never
-
+  - name: check Jenkins availability via Nginx
+    uri:
+      url: https://{{ jenkins_domain }}/jenkins
+      status_code: [200, 403, 401, 301]
+      return_content: yes
+    register: jenkins_status
+    retries: 10
+    delay: 15
+    until: jenkins_status.status in [200, 403, 401, 301]
+    ignore_errors: true
 
 # Install modules
 - include_tasks: modules.yml

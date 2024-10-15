@@ -7,17 +7,17 @@
       mode: '0755'
 
   - name: Generate private key
-    command: openssl genpkey -algorithm RSA -out {{ ssl_certificate_key_path }} -pkeyopt rsa_keygen_bits:2048
+    command: openssl genpkey -algorithm RSA -out {{ ssl_certificate_key_path }} -pkeyopt rsa_keygen_bits:{{ rsa_keygen_bits }}
     # args:
       # creates: "{{ ssl_certificate_key_path }}"
 
   - name: Generate CSR (Certificate Signing Request)
-    command: openssl req -new -key {{ ssl_certificate_key_path }} -out {{ ssl_csr_path }} -subj "/C=RU/ST=Moscow/L=Moscow/O=MyOrg/OU=IT/CN={{ jenkins_domain }}"
+    command: openssl req -new -key {{ ssl_certificate_key_path }} -out {{ ssl_csr_path }} -subj "{{ ssl_certificate_info }}"
     # args:
       # creates: "{{ ssl_csr_path }}"
 
   - name: Generate self-signed certificate
-    command: openssl x509 -req -days 365 -in {{ ssl_csr_path }} -signkey {{ ssl_certificate_key_path }} -out {{ ssl_certificate_path }}
+    command: openssl x509 -req -days {{ ssl_certificate_days }} -in {{ ssl_csr_path }} -signkey {{ ssl_certificate_key_path }} -out {{ ssl_certificate_path }}
     # args:
       # creates: "{{ ssl_certificate_path }}"
   tags:
