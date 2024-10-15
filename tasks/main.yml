@@ -91,12 +91,14 @@
   - include_tasks: cert-create.yml
     tags: 
       - cert-create
+      - nginx
       - never
 
   # Если сертификаты не генерируются, загружаем их из Vault
   - include_tasks: cert-vault.yml
     tags:
       - cert-vault
+      - nginx
       - never
 
   - name: Enable Nginx Jenkins site
