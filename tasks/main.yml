@@ -110,6 +110,7 @@
       url: "https://{{ jenkins_domain }}/jenkins"
       status_code: [200, 403, 401, 301]
       return_content: yes
+      validate_certs: no
     register: jenkins_status
     retries: 10
     delay: 15
@@ -135,6 +136,7 @@
       url: "https://{{ jenkins_domain }}/jenkins"
       status_code: [200, 403, 401, 301]
       return_content: yes
+      validate_certs: no
     register: jenkins_status
     retries: 5
     delay: 5
