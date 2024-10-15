@@ -136,8 +136,8 @@
       status_code: [200, 403, 401, 301]
       return_content: yes
     register: jenkins_status
-    retries: 10
-    delay: 15
+    retries: 5
+    delay: 5
     until: jenkins_status.status in [200, 403, 401, 301]
     ignore_errors: true
   
