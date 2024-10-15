@@ -81,36 +81,42 @@
       - nginx
       - openssl
 
+  - name: restart nginx
+    service:
+      name: nginx
+      state: restarted
+
+  tags:
+    - nginx
+    - never
+
+# Вызов отдельной задачи для генерации сертификатов
+- include_tasks: cert-create.yml
+  tags: 
+    - cert-create
+    - nginx
+    - never
+
+# Если сертификаты не генерируются, загружаем их из Vault
+- include_tasks: cert-vault.yml
+  tags:
+    - cert-vault
+    - nginx
+    - never
+
+- block:
+
   - name: Configure Nginx for Jenkins SSL
     template:
       src: jenkins_nginx.conf.j2
       dest: /etc/nginx/sites-available/jenkins
     notify: restart nginx
 
-  # Вызов отдельной задачи для генерации сертификатов
-  - include_tasks: cert-create.yml
-    tags: 
-      - cert-create
-      - nginx
-      - never
-
-  # Если сертификаты не генерируются, загружаем их из Vault
-  - include_tasks: cert-vault.yml
-    tags:
-      - cert-vault
-      - nginx
-      - never
-
   - name: Enable Nginx Jenkins site
     file:
       src: /etc/nginx/sites-available/jenkins
       dest: /etc/nginx/sites-enabled/jenkins
       state: link
-
-  - name: restart nginx
-    service:
-      name: nginx
-      state: restarted
 
   tags:
     - nginx
