@@ -67,6 +67,7 @@
     community.general.jenkins_plugin:
       url_username: admin
       url_password: "{{ jenkins_admin_pass }}"
+      url: http://localhost:8080/jenkins
       name: "{{ item.key }}"
       state: "{{ 'pinned' if item.value['pinned'] else 'unpinned'}}"
     when: >
@@ -77,6 +78,7 @@
     community.general.jenkins_plugin:
       url_username: admin
       url_password: "{{ jenkins_admin_pass }}"
+      url: http://localhost:8080/jenkins
       name: "{{ item.key }}"
       state: "{{ 'enabled' if item.value['enabled'] else 'disabled'}}"
     when: >
