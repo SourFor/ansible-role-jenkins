@@ -22,3 +22,7 @@
       group: root
       mode: '0640'
 
+  tags:
+    - cert-vault
+  notify: restart nginx
+

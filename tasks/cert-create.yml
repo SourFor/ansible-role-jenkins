@@ -22,3 +22,4 @@
       # creates: "{{ ssl_certificate_path }}"
   tags:
     - cert-create
+  notify: restart nginx
