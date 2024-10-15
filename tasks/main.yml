@@ -95,7 +95,6 @@
   tags: 
     - cert-create
     - nginx
-    - never
     - all
 
 # Если сертификаты не генерируются, загружаем их из Vault
@@ -103,7 +102,6 @@
   tags:
     - cert-vault
     - nginx
-    - never
     - all
 
 - block:
