@@ -119,17 +119,16 @@
     - nginx
     - never
 
-- name: Wait for Jenkins to be ready
-  uri:
-    url: http://localhost:8080/jenkins
-    status_code: [200, 403, 401, 301]
-    return_content: yes
-  register: jenkins_status
-  retries: 10
-  delay: 15
-  until: jenkins_status.status in [200, 403, 401, 301]
-  tags:
-    - always
+- block:
+  - name: Wait for Jenkins to be ready
+    uri:
+      url: http://localhost:8080/jenkins
+      status_code: [200, 403, 401, 301]
+      return_content: yes
+    register: jenkins_status
+    retries: 10
+    delay: 15
+    until: jenkins_status.status in [200, 403, 401, 301]
 
   - name: check Jenkins availability via Nginx
     uri:
@@ -141,6 +140,9 @@
     delay: 15
     until: jenkins_status.status in [200, 403, 401, 301]
     ignore_errors: true
+  
+  tags:
+    - always
 
 # Install modules
 - include_tasks: modules.yml
