@@ -91,7 +91,8 @@
     - cert-vault
     - never
 
-- block: Nginx
+- block:
+
   - name: Configure Nginx for Jenkins SSL
     template:
       src: jenkins_nginx.conf.j2
