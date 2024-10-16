@@ -88,6 +88,8 @@
 
   tags:
     - nginx
+    - cert-vault
+    - cert-create
     - never
 
 # Вызов отдельной задачи для генерации сертификатов
@@ -116,6 +118,8 @@
 
   tags:
     - nginx
+    - cert-vault
+    - cert-create
     - never
 
 - block:
