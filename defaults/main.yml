@@ -2,6 +2,7 @@
 # defaults file for ansible-role-jenkins
 jenkins_domain: jenkins.example.com
 jenkins_admin_pass: "6fb362466213479c892db59f9f25eee4" # save it in the vault file
+jenkins_uc: "" # env var JENKINS_UC (url for update-center)
 ssl_dir_path: "/etc/nginx/ssl"
 ssl_certificate: jenkins.crt
 ssl_certificate_key: jenkins.key

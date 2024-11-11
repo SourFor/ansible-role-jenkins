@@ -1,0 +1,7 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<sites>
+  <site>
+    <id>default</id>
+    <url>{{ jenkins_uc | default('https://updates.jenkins.io/update-center.json', true) }}</url>
+  </site>
+</sites>

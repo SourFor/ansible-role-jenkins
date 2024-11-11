@@ -113,6 +113,11 @@ Environment="JENKINS_PORT=8080"
 # Servlet context (important if you want to use reverse proxying)
 Environment="JENKINS_PREFIX=/jenkins"
 
+# Plugin downloauding url
+{% if jenkins_uc %}
+Environment="JENKINS_UC={{ jenkins_uc }}"
+{% endif %}
+
 # Arbitrary additional arguments to pass to Jenkins.
 # Full option list: java -jar jenkins.war --help
 

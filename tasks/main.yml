@@ -4,14 +4,6 @@
 
 - block:
 
-  - name: Install dependencies
-    apt:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - openjdk-17-jdk
-
-  # Добавляем репозиторий Jenkins
   - name: Add Jenkins GPG key
     apt_key:
       url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
@@ -26,20 +18,32 @@
     apt:
       update_cache: yes
 
+  - name: Install dependencies
+    apt:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - openjdk-17-jdk
+
   - name: Install Jenkins
     apt:
       name: jenkins
       state: present
 
-  - name: create dir /etc/jenkins
-    ansible.builtin.file:
-      path: /etc/jenkins
-      owner: jenkins
-      group: jenkins
-      state: directory
-      mode: '0600'
+  # - name: create dir /etc/jenkins
+  #   ansible.builtin.file:
+  #     path: /etc/jenkins
+  #     owner: jenkins
+  #     group: jenkins
+  #     state: directory
+  #     mode: '0600'
+  tags:
+    - install
+    - never
 
-  - name: create dir /etc/jenkins
+- block:
+
+  - name: create dir /var/lib/jenkins/init.groovy.d
     ansible.builtin.file:
       path: /var/lib/jenkins/init.groovy.d
       owner: jenkins
@@ -66,7 +70,20 @@
       - reload systemd 
       - restart jenkins
 
+  - name: Configure jenkins update center
+    template:
+      src: hudson.model.UpdateCenter.xml.j2
+      dest: "/var/lib/jenkins/hudson.model.UpdateCenter.xml"
+      owner: jenkins
+      group: jenkins
+      mode: '0644'
+    notify:
+      - restart jenkins
+    when:
+    - jenkins_uc
+
   tags:
+    - config
     - install
     - never
 
@@ -92,15 +109,15 @@
     - cert-create
     - never
 
-# Вызов отдельной задачи для генерации сертификатов
 - include_tasks: cert-create.yml
   tags: 
     - cert-create
+    - never
 
-# Если сертификаты не генерируются, загружаем их из Vault
 - include_tasks: cert-vault.yml
   tags:
     - cert-vault
+    - never
 
 - block:
 
